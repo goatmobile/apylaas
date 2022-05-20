@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+
+.tooltip {
+  @apply invisible absolute;
+}
+
+.has-tooltip:hover .tooltip {
+  @apply visible z-50;
+}
+
+@tailwind utilities;
+
+/* #response {
+  padding: 10px;
+  background-color: #ededed;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+body {
+  text-align: center;
+  font-family: monospace;
+  padding: 20px;
+}
+
+section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#response > img {
+  margin: 10px;
+}
+
+#run-body tr {
+  border: 1px solid black;
+}
+
+.uncallable {
+  color: grey
+}
+
+.index-list {
+  text-align: left;
+}
+
+.run-error {
+  background-color: #ffdddd;
+} */

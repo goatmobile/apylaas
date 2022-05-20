@@ -1,0 +1,44 @@
+{% extends "base.html" %} {% block content %}
+<h1 class="text-2xl font-bold text-indigo-700 font-mono">
+  {{ module.__name__ }}
+</h1>
+{% if module.__doc__ is not none %}
+<div class="mt-6 max-h-96 overflow-y-scroll">
+  <pre class="whitespace-pre-wrap">{{ module.__doc__ }}</pre>
+</div>
+{% endif %} {% if any_uncallable %}
+<button id="toggle-uncallable">Hide Uncallable</button>
+{% endif %}
+<ul class="mt-4 text-gray-800 font-semibold">
+  {% for name, item in methods.items() %}
+  <li class="mt-3">
+    {% if item | is_callable %}
+    <a
+      class="inline-block bg-indigo-500 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-400 active:bg-indigo-600 font-mono"
+      href="/{{ name }}"
+      >{{ item | to_signature }}</a
+    >
+    {% else %}
+    <div
+      class="has-tooltip relative w-fit inline-block bg-gray-500 text-white px-4 py-2 rounded-lg shadow font-mono"
+    >
+      <label class="font-mono font-bold">{{ name }} </label>
+      <span
+        class="rounded-full bg-red-300 px-2 font-bold text-sm inline-block text-black w-fit align-middle text-center"
+        >!</span
+      >
+      <div
+        class="tooltip mt-1 absolute left-full inline-block w-96 ml-2 text-sm"
+      >
+        <p class="w-fit bg-red-300 px-3 text-black py-2 rounded-xl">
+          {{ item.reason }}
+        </p>
+      </div>
+    </div>
+
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+<script src="{{ url_for('static', filename='index.js') }}"></script>
+{% endblock %}

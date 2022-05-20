@@ -1,0 +1,37 @@
+main: |
+  # parallel
+  # dep: css
+  # dep: flask
+  # dep: rs
+  # dep: sr
+  # dep: esbuild
+
+flask-live: |
+  apylaas -l examples.basic -r --livereload
+
+flask: |
+  # arg: library=examples.basic library to use
+  set -eux
+  DEBUG=1 apylaas --library $LIBRARY
+
+flask2: |
+  # DEBUG=1 apylaas --library examples.classifier
+  DEBUG=1 apylaas --library numpy
+
+esbuild: |
+  # watch: echo apylaas/static/function.jsx
+  ./node_modules/.bin/esbuild apylaas/static/function.jsx --jsx-factory=h --jsx-fragment=Fragment --bundle --outfile=apylaas/static/function.js --sourcemap
+
+rs: |
+  python reload-server.py
+
+sr: |
+  # watch: find ./apylaas -type f | grep -v pycache
+  kill -s USR1 $(ps -ax | grep reload-server.py | grep python | awk '{print $1}')
+
+css: |
+  npx tailwindcss --input ./apylaas/static/style.css -o ./apylaas/static/output.css --watch
+
+dist: |
+  ./node_modules/.bin/esbuild apylaas/static/function.jsx --jsx-factory=h --jsx-fragment=Fragment --bundle --outfile=apylaas/static/function.js --minify
+  npx tailwindcss --input ./apylaas/static/style.css -o ./apylaas/static/output.css
