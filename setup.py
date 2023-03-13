@@ -37,7 +37,11 @@ setup(
     # author_email=about['__author_email__'],
     packages=["apylaas"],
     python_requires=">=3.7.*",
-    install_requires=[],
+    install_requires=[
+        "jinja2",
+        "waitress",
+        "Flask",
+    ],
     license="MIT",
     package_data={
         "": web_files,

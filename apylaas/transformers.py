@@ -15,6 +15,9 @@ except ImportError:
     has_PIL = False
 
 
+has_PIL = False
+
+
 def default_type_to_html():
     transformers = [
         (str, "text"),

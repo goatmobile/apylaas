@@ -36,3 +36,19 @@ if (button) {
     hide();
   }
 }
+
+const buttons = document.querySelectorAll("button[data-name]");
+buttons.forEach(button => {
+  console.log(button);
+
+  button.addEventListener("click", () => {
+    const name = button.getAttribute("data-name");
+    const fd = new FormData();
+    fetch(`/api/${name}`, {
+      method: "POST",
+      body: fd,
+    }).then((r) => {
+
+    });
+  });
+})

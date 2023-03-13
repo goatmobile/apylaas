@@ -289,6 +289,6 @@ dist
 .yarn/install-state.gz
 .pnp.*
 yarn.lock
-apylaas/static/function.js
+# apylaas/static/function.js
 apylaas/static/function.js.map
-apylaas/static/output.css
+# apylaas/static/output.css

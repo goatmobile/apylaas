@@ -16,7 +16,6 @@ from typing import *
 from types import *
 
 import flask
-import werkzeug
 import waitress
 from flask import request, render_template, Flask
 from flask.views import View
@@ -34,6 +33,10 @@ class CallableItem:
     arg_types: Dict[str, Tuple[str, type]]
     fn: Callable
     return_type: str
+
+    group: Optional[str]
+    group_priority: Optional[int]
+    priority: Optional[int]
 
 
 @dataclass
@@ -54,6 +57,16 @@ def type_name(type) -> str:
         return type.__name__
 
     return str(type).lstrip("typing.")
+
+
+def group(group, group_priority=0, priority=0):
+    def decorator(fn):
+        fn._apylaas_group = group
+        fn._apylaas_group_priority = group_priority
+        fn._apylaas_priority = priority
+        return fn
+
+    return decorator
 
 
 def to_signature(item: CallableItem) -> str:
@@ -219,7 +232,12 @@ class App:
             )
 
         return CallableItem(
-            arg_types=arg_types, return_type=signature.return_annotation, fn=fn
+            arg_types=arg_types,
+            return_type=signature.return_annotation,
+            fn=fn,
+            group=getattr(fn, "_apylaas_group", None),
+            priority=getattr(fn, "_apylaas_priority", None),
+            group_priority=getattr(fn, "_apylaas_group_priority", None),
         )
 
     def search_module(
@@ -325,11 +343,22 @@ class App:
                     is_editable=IS_EDITABLE_INSTALL,
                 )
 
+            def method_key(item: Tuple[str, Union[CallableItem, UncallableItem]]):
+                name, item = item
+                if isinstance(item, UncallableItem):
+                    return "$$UNCALLABLE$$"
+                if item.group is None:
+                    return "$$UNGROUPED$$"
+                return item.group
+
+            tuple_methods = [(k, v) for k, v in methods.items()]
+            tuple_methods = sorted(tuple_methods, key=method_key)
+
             return render_template(
                 "index.html",
                 title=f"index of {module.__name__}",
                 module=module,
-                methods=methods,
+                methods=tuple_methods,
                 is_editable=IS_EDITABLE_INSTALL,
                 any_uncallable=any(isinstance(m, UncallableItem) for m in methods),
             )
